@@ -17,15 +17,6 @@
 # limitations under the License.
 #
 
-
-bash "varnish-cache.org" do
-  user "root"
-  code <<-EOH
-    rpm -q varnish || rpm --nosignature -i #{node['varnish']['release_rpm']}
-  EOH
-  only_if {platform?("redhat", "centos", "fedora", "amazon", "scientific")}
-end
-
 if platform?("ubuntu", "debian")
   include_recipe "apt"
   apt_repository "varnish-cache.org" do
@@ -38,9 +29,18 @@ if platform?("ubuntu", "debian")
   end
 end
 
+bash "update_yum" do
+  user "root"
+  code <<-EOH
+    yum check-update
+  EOH
+  only_if {platform?("redhat", "centos", "fedora", "amazon", "scientific")}
+  returns [0, 100]
+end
+
 pkgs = value_for_platform(
   [ "centos", "redhat", "fedora" ] => {
-    "default" => %w{ varnish-release varnish }
+    "default" => %w{ varnish-libs varnish }
   },
   [ "debian", "ubuntu" ] => {
     "default" => %w{ varnish }
