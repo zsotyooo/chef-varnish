@@ -17,6 +17,23 @@
 # limitations under the License.
 #
 
+bash "varnish-cache.org" do
+  user "root"
+  code <<-EOH
+    rpm -q varnish || rpm --nosignature -i http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-libs-3.0.3-1.el6.x86_64.rpm
+  EOH
+  only_if {platform?("redhat", "centos", "fedora", "amazon", "scientific")}
+end
+
+bash "varnish-cache.org" do
+  user "root"
+  code <<-EOH
+    rpm -q varnish || rpm --nosignature -i http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-3.0.3-1.el6.x86_64.rpm
+  EOH
+  only_if {platform?("redhat", "centos", "fedora", "amazon", "scientific")}
+end
+
+
 if platform?("ubuntu", "debian")
   include_recipe "apt"
   apt_repository "varnish-cache.org" do
@@ -26,30 +43,6 @@ if platform?("ubuntu", "debian")
     key "http://repo.varnish-cache.org/debian/GPG-key.txt"
     deb_src true
     notifies :run, resources(:execute => "apt-get update"), :immediately
-  end
-end
-
-bash "update_yum" do
-  user "root"
-  code <<-EOH
-    yum check-update
-  EOH
-  only_if {platform?("redhat", "centos", "fedora", "amazon", "scientific")}
-  returns [0, 100]
-end
-
-pkgs = value_for_platform(
-  [ "centos", "redhat", "fedora" ] => {
-    "default" => %w{ varnish-libs varnish }
-  },
-  [ "debian", "ubuntu" ] => {
-    "default" => %w{ varnish }
-  }
-)
-
-pkgs.each do |pkg|
-  package pkg do
-    action :install
   end
 end
 
