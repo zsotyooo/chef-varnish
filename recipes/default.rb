@@ -20,7 +20,7 @@
 bash "varnish-cache.org" do
   user "root"
   code <<-EOH
-    rpm -q varnish || rpm --nosignature -i http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-libs-3.0.3-1.el6.x86_64.rpm
+    rpm -q varnish || rpm --nosignature -i http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish/varnish-libs-3.0.3-1.el6.x86_64.rpm
   EOH
   only_if {platform?("redhat", "centos", "fedora", "amazon", "scientific")}
 end
@@ -28,7 +28,7 @@ end
 bash "varnish-cache.org" do
   user "root"
   code <<-EOH
-    rpm -q varnish || rpm --nosignature -i http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish-3.0.3-1.el6.x86_64.rpm
+    rpm -q varnish || rpm --nosignature -i http://repo.varnish-cache.org/redhat/varnish-3.0/el6/x86_64/varnish/varnish-3.0.3-1.el6.x86_64.rpm
   EOH
   only_if {platform?("redhat", "centos", "fedora", "amazon", "scientific")}
 end
